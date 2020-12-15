@@ -15,5 +15,8 @@ export const config = {
     "database": "udagram_prod",
     "host": "",
     "dialect": "postgress"
+  },
+  "jwt": {
+    "secret": "halloworld"
   }
 }
