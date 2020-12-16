@@ -23,7 +23,7 @@ async function comparePasswords(plainTextPassword: string, hash: string): Promis
 }
 
 function generateJWT(user: User): string {    
-    return jwt.sign(user, config.jwt.secret)
+    return jwt.sign(JSON.stringify(user), config.jwt.secret)
 }
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
@@ -89,6 +89,7 @@ router.post('/login', async (req: Request, res: Response) => {
 router.post('/', async (req: Request, res: Response) => {
     const email = req.body.email;
     const plainTextPassword = req.body.password;
+
     // check email is valid
     if (!email || !EmailValidator.validate(email)) {
         return res.status(400).send({ auth: false, message: 'Email is required or malformed' });
@@ -108,6 +109,8 @@ router.post('/', async (req: Request, res: Response) => {
 
     const password_hash = await generatePassword(plainTextPassword);
 
+    console.log("SelimDursun")
+
     const newUser = await new User({
         email: email,
         password_hash: password_hash
@@ -119,6 +122,7 @@ router.post('/', async (req: Request, res: Response) => {
     } catch (e) {
         throw e;
     }
+    console.log(email, plainTextPassword, savedUser)
 
     // Generate JWT
     const jwt = generateJWT(savedUser);
