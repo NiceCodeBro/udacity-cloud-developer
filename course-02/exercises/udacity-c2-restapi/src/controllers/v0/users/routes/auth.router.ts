@@ -109,8 +109,6 @@ router.post('/', async (req: Request, res: Response) => {
 
     const password_hash = await generatePassword(plainTextPassword);
 
-    console.log("SelimDursun")
-
     const newUser = await new User({
         email: email,
         password_hash: password_hash
@@ -122,7 +120,6 @@ router.post('/', async (req: Request, res: Response) => {
     } catch (e) {
         throw e;
     }
-    console.log(email, plainTextPassword, savedUser)
 
     // Generate JWT
     const jwt = generateJWT(savedUser);
