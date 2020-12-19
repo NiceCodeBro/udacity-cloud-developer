@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles, parseUrl, validateImageURL} from './util/util';
@@ -15,7 +17,7 @@ import {filterImageFromURL, deleteLocalFiles, parseUrl, validateImageURL} from '
 
   //CORS Should be restricted
   app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:8100");
+    res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     next();
   });
@@ -45,8 +47,12 @@ import {filterImageFromURL, deleteLocalFiles, parseUrl, validateImageURL} from '
   });
 
   app.get( "/filteredimage", async ( req, res ) => {
+
     try {
-      const extractedUrl = parseUrl(decodeURIComponent(req.originalUrl));
+      let extractedUrl = parseUrl(decodeURIComponent(req.originalUrl));
+      if (process.env.IS_DEPLOYED !== undefined && process.env.IS_DEPLOYED === 'DEPLOYED') {
+        extractedUrl = parseUrl(req.originalUrl);
+      } 
 
       if(validateImageURL(extractedUrl)){
         const filteredImgPath: string = await filterImageFromURL(extractedUrl);
