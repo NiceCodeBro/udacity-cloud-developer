@@ -45,13 +45,11 @@ import {filterImageFromURL, deleteLocalFiles, parseUrl, validateImageURL} from '
   });
 
   app.get( "/filteredimage", async ( req, res ) => {
-    console.log('istek geldi')
     try {
       const extractedUrl = parseUrl(decodeURIComponent(req.originalUrl));
 
       if(validateImageURL(extractedUrl)){
         const filteredImgPath: string = await filterImageFromURL(extractedUrl);
-        console.log(filteredImgPath)
         return res.status(200).sendFile(filteredImgPath, ()=> {
           deleteLocalFiles([filteredImgPath]);
         });
