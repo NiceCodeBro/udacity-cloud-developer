@@ -1,6 +1,6 @@
 export interface FeedItem {
     id: number;
-    url: string;
+    url: string | ArrayBuffer;
     caption: string;
 }
 
