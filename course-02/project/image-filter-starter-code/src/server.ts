@@ -13,6 +13,13 @@ import {filterImageFromURL, deleteLocalFiles, parseUrl, validateImageURL} from '
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
 
+  //CORS Should be restricted
+  app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:8100");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    next();
+  });
+
   // @TODO1 IMPLEMENT A RESTFUL ENDPOINT
   // GET /filteredimage?image_url={{URL}}
   // endpoint to filter an image from a public url.
@@ -38,12 +45,13 @@ import {filterImageFromURL, deleteLocalFiles, parseUrl, validateImageURL} from '
   });
 
   app.get( "/filteredimage", async ( req, res ) => {
+    console.log('istek geldi')
     try {
-      const extractedUrl = parseUrl(req.originalUrl);
+      const extractedUrl = parseUrl(decodeURIComponent(req.originalUrl));
 
       if(validateImageURL(extractedUrl)){
         const filteredImgPath: string = await filterImageFromURL(extractedUrl);
-
+        console.log(filteredImgPath)
         return res.status(200).sendFile(filteredImgPath, ()=> {
           deleteLocalFiles([filteredImgPath]);
         });
