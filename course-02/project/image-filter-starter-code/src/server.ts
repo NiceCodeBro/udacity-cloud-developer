@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import {filterImageFromURL, deleteLocalFiles, parseUrl, validateImageURL} from './util/util';
 
 (async () => {
 
@@ -12,6 +12,13 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
+
+  //CORS Should be restricted
+  app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:8100");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    next();
+  });
 
   // @TODO1 IMPLEMENT A RESTFUL ENDPOINT
   // GET /filteredimage?image_url={{URL}}
@@ -35,17 +42,20 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // Displays a simple message to the user
   app.get( "/", async ( req, res ) => {
     res.send("try GET /filteredimage?image_url={{}}")
-  } );
-  
+  });
 
   app.get( "/filteredimage", async ( req, res ) => {
     try {
-      const {image_url} = req.query;
-      const filteredImgPath: string = await filterImageFromURL(image_url);
-  
-      return res.status(200).sendFile(filteredImgPath, ()=> {
-        deleteLocalFiles([filteredImgPath]);
-      });
+      const extractedUrl = parseUrl(decodeURIComponent(req.originalUrl));
+
+      if(validateImageURL(extractedUrl)){
+        const filteredImgPath: string = await filterImageFromURL(extractedUrl);
+        return res.status(200).sendFile(filteredImgPath, ()=> {
+          deleteLocalFiles([filteredImgPath]);
+        });
+      } else {
+        return res.status(400).send('Error!');
+      }
     } catch(err) {
       return res.status(400).send('Error!');
     }

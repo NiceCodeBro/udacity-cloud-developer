@@ -32,3 +32,21 @@ export async function deleteLocalFiles(files:Array<string>){
         fs.unlinkSync(file);
     }
 }
+
+
+// Check if Url is Good
+export function validateImageURL(address: string): boolean{
+    try{
+        const newAddress = new URL(address)
+    }catch(TypeError){
+        return false
+    }
+    // Is it written like we'd expect an image?
+    return address.toLowerCase().match(/(.jpeg|.jpg|.gif|.png)/) != null
+}
+
+/* Extracts the Query string and turns it into a URL that can be input into jimp */
+export function parseUrl(query: string): string{
+    const queriedUrl = query.replace("/filteredimage?image_url=",'');
+    return queriedUrl
+}
