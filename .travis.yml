@@ -15,7 +15,7 @@ before_script:
 
 script:
   - docker --version # print the version for logging
-  - docker build -t simple-node ./course-03/lesson-3-independent-releases/exercises/travis_ci
+  - docker build -t simple-node --build-arg FAVORITE_INSTRUCTOR=${FAVORITE_INSTRUCTOR} ./course-03/lesson-3-independent-releases/exercises/travis_env_var_exercise
   - docker tag simple-node selimdockerhub/simple-node:latest
 
 # Tasks to perform after the process is successful. Formatting the Docker username and password as below enables you to programmatically log in without having the password exposed in logs.
