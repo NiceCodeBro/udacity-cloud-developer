@@ -15,10 +15,10 @@ before_script:
 
 script:
   - docker --version # print the version for logging
-  - docker build -t simple-node --build-arg FAVORITE_INSTRUCTOR=${FAVORITE_INSTRUCTOR} ./course-03/lesson-3-independent-releases/exercises/travis_env_var_exercise
-  - docker tag simple-node selimdockerhub/simple-node:latest
+  - docker build -t simple-reverse-proxy  ./course-03/lesson-5-kubernetes-for-production/exercises/simple-express #--build-arg FAVORITE_INSTRUCTOR=${FAVORITE_INSTRUCTOR}
+  - docker tag simple-reverse-proxy selimdockerhub/simple-reverse-proxy:latest
 
 # Tasks to perform after the process is successful. Formatting the Docker username and password as below enables you to programmatically log in without having the password exposed in logs.
 after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker push selimdockerhub/simple-node
+  - docker push selimdockerhub/simple-reverse-proxy
